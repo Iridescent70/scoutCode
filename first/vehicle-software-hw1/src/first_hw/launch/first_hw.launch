@@ -1,0 +1,40 @@
+<launch>
+    <!-- 启动 IMU 功能包 -->
+    <include file="$(find imu_launch)/launch/imu_msg.launch">
+    </include>
+
+    <!-- 启动 RealSense D435 相机 -->
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="enable_pointcloud" value="true"/>
+        <arg name="align_depth" value="true"/>
+    </include>
+
+    <!-- 启动 RS-Helios-16P 激光雷达 -->
+    <include file="$(find rslidar_sdk)/launch/start.launch">
+    </include>
+
+  <!-- 组1：点云处理节点 -->
+  <group ns="pcl">
+    <!-- 启动PCL节点 -->
+    <node pkg="first_hw" type="pcl_node" name="pcl_node" output="screen" />
+  </group>
+
+  <!-- 组2：显示颜色和深度节点 -->
+  <group ns="color_depth">
+    <!-- 启动显示颜色和深度节点 -->
+    <node pkg="first_hw" type="show_color_and_depth_node" name="color_depth_node" output="screen" />
+  </group>
+
+  <!-- 组3：IMU节点 -->
+  <group ns="sensors">
+    <!-- 启动IMU节点 -->
+    <node pkg="first_hw" type="imu_node" name="imu_node" output="log" launch-prefix="gnome-terminal -- bash -c" />
+  </group>
+
+  <!-- 组4：里程计节点 -->
+  <group ns="odom">
+    <!-- 启动里程计节点 -->
+    <node pkg="first_hw" type="odom_node" name="odom_node" output="log" launch-prefix="gnome-terminal -- bash -c" />
+  </group>
+
+</launch>
